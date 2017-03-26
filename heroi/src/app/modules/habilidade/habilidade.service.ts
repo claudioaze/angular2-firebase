@@ -14,21 +14,21 @@ export class HabilidadeService {
       .then(response => this.convert(response.json()));
   }
 
-  postCliente(email:any) {
-    return this.http.post(`${this.baseUrl}/habilidade.json`, email)
+  postHabilidade(habilidade:any) {
+    console.log(habilidade);
+    return this.http.post(`${this.baseUrl}/habilidade.json`, habilidade)
       .toPromise()
       .then(response => this.convert(response.json()));
   }
 
-  pathCliente(habilidade:any) {
+  patchHabilidade(habilidade:any) {
     let codigo = habilidade.codigo;
     delete habilidade.codigo;
     return this.http.patch(`${this.baseUrl}/habilidade/${codigo}.json`, habilidade)
       .toPromise();
   }
 
-  deleteCliente(codigoHabilidade:any) {
-    console.log("Service " + codigoHabilidade)
+  deleteHabilidade(codigoHabilidade: string) {
     return this.http.delete(`${this.baseUrl}/habilidade/${codigoHabilidade}.json`)
       .toPromise();
   }

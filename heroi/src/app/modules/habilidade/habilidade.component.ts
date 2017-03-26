@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HabilidadeService } from './habilidade.service'
 
+import { HabilidadeService } from './habilidade.service'
+import { SuperComponent } from './../../common/resource/super-component';
+import { AlertMessage } from './../../common/domain/alert-message.model';
 import { Habilidade } from './habilidade.model';
+
 
 @Component({
   selector: 'app-habilidade',
   templateUrl: './habilidade.component.html',
   providers: [HabilidadeService]
 })
-export class HabilidadeComponent implements OnInit {
+export class HabilidadeComponent extends SuperComponent implements OnInit {
 
   form: FormGroup;
 
   habilidades: Habilidade[];
 
   constructor(private formBuilder: FormBuilder,
-    private service: HabilidadeService) {
-
+              private service: HabilidadeService) {
+      super();
   }
 
   ngOnInit() {
@@ -32,47 +35,41 @@ export class HabilidadeComponent implements OnInit {
     });
   }
 
-  initHabilidade() {
-    return this.formBuilder.group({
-      habilidade: ['', Validators.required]
-    });
-  }
-
   private reload() {
     this.service.getHabilidades().then(lista => { this.habilidades = lista; });
   }
 
-  // salvar(cliente:any) {
-  //   if (cliente.codigo) {
-  //     this.service.pathCliente(cliente)
-  //       .then(result => {
-  //         this.reload()
-  //         this.mensagem = "Alterou!!!!";
-  //       }).catch(error => {
-  //         this.mensagem = "Problema ao alterar: " + error
-  //       })
-  //   }
-  //   else {
-  //     this.service.postCliente(cliente)
-  //       .then(result => {
-  //         this.reload()
-  //         this.mensagem = "Salvou!!!!";
-  //       }).catch(error => {
-  //         this.mensagem = "Problema ao salvar: " + error
-  //       })
-  //   }
-  // }
+  salvar() {
+    if (this.form.get('codigo').value) {
+      this.service.patchHabilidade(this.form.value)
+        .then(result => {
+          this.addSuccessAlert("Habilidade alterada.");
+          this.ngOnInit();
+        }).catch(error => {
+          this.addErrorAlert(error);
+        })
+    }
+    else {
+      this.service.postHabilidade(this.form.value)
+        .then(result => {
+          this.addSuccessAlert("Nova habilidade salva.");
+          this.ngOnInit();
+        }).catch(error => {
+          this.addErrorAlert(error);
+        })
+    }
+  }
 
-  // deletaCliente(cliente:any) {
-  //   this.service.deleteCliente(cliente.codigo)
-  //     .then(() => {
-  //       this.reload()
-  //       this.mensagem = "Deletado com Sucesso!!!"
-  //     })
-  // }
+  editar(habilidade: Habilidade) {
+    this.alert = new AlertMessage();
+    this.form.patchValue(habilidade);
+  }
 
-  // selecionaCliente(cliente:any) {
-  //   this.cliente = Object.assign({}, cliente);
-  // }
-
+  deletar(codigoHabilidade: string) {
+    this.service.deleteHabilidade(codigoHabilidade)
+      .then(result => {
+        this.addSuccessAlert("Habilidade excluída.");
+        this.reload();
+      });
+  }
 }

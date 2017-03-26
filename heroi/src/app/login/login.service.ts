@@ -12,8 +12,8 @@ export class LoginService {
   constructor(private router: Router, private route: ActivatedRoute) { }
 
   doLogin(user: User) {
-    if (user.login === 'usuario@email.com' &&
-      user.password === '123') {
+    if (user.login === 'admin' &&
+      user.password === 'admin') {
 
       user.token = Math.random.toString();
 

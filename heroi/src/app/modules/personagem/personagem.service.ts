@@ -30,8 +30,7 @@ export class PersonagemService {
       .toPromise();
   }
 
-  deletePersonagem(codigoPersonagem:any) {
-    console.log("Service " + codigoPersonagem)
+  deletePersonagem(codigoPersonagem: string) {
     return this.http.delete(`${this.baseUrl}/personagem/${codigoPersonagem}.json`)
       .toPromise();
   }

@@ -1,34 +1,40 @@
-import { Personagem } from './personagem.model';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 
+import { AlertMessage } from './../../common/domain/alert-message.model';
+import { SuperComponent } from './../../common/resource/super-component';
 import { PersonagemService } from './personagem.service';
+import { HabilidadeService } from './../habilidade/habilidade.service';
+import { Personagem } from './personagem.model';
+import { Habilidade } from './../habilidade/habilidade.model';
 
 @Component({
   selector: 'app-personagem',
   templateUrl: './personagem.component.html',
   providers: []
 })
-export class PersonagemComponent implements OnInit {
-
-  private mensagem: String;
+export class PersonagemComponent extends SuperComponent implements OnInit {
 
   form: FormGroup;
 
   personagens: Personagem[];
 
-  constructor(private formBuilder: FormBuilder,
-    private service: PersonagemService) {
+  listaHabilidades: Habilidade[];
 
+  constructor(private formBuilder: FormBuilder,
+              private personagemService: PersonagemService,
+              private habilidadeService: HabilidadeService) {
+    super();
   }
 
   ngOnInit() {
-    this.form = this.createForm();
+    this.loadHabilidades();
+    this.createForm();
     this.reload();
   }
 
-  public createForm(): FormGroup {
-    return this.formBuilder.group({
+  public createForm() {
+    this.form = this.formBuilder.group({
       codigo: [],
       nome: ['', Validators.required],
       companhia: ['', Validators.required],
@@ -45,7 +51,11 @@ export class PersonagemComponent implements OnInit {
   }
 
   private reload() {
-    this.service.getPersonagens().then(lista => { this.personagens = lista; });
+    this.personagemService.getPersonagens().then(lista => { this.personagens = lista; });
+  }
+
+  private loadHabilidades() {
+    this.habilidadeService.getHabilidades().then(lista => { this.listaHabilidades = lista});
   }
 
   addHabilidade() {
@@ -59,7 +69,7 @@ export class PersonagemComponent implements OnInit {
   }
 
   editar(personagem: Personagem) {
-
+    this.alert = new AlertMessage();
     this.form.patchValue(personagem);
 
     //deletar todas as habilidades (form control) do form
@@ -79,35 +89,33 @@ export class PersonagemComponent implements OnInit {
     }
   }
 
-  deletar(codigoPersonagem: any) {
-    this.service.deletePersonagem(codigoPersonagem)
+  deletar(codigoPersonagem: string) {
+    this.personagemService.deletePersonagem(codigoPersonagem)
       .then(result => {
+        this.addSuccessAlert("Personagem excluído.");
         this.reload();
       });
-
   }
 
   salvar() {
     if (this.form.get('codigo').value) {
-      this.service.patchPersonagem(this.form.value)
+      this.personagemService.patchPersonagem(this.form.value)
         .then(result => {
-          this.reload()
-          this.mensagem = "Alterou!!!!";
+          this.addSuccessAlert("Personagem alterado.");
+          this.ngOnInit();
         }).catch(error => {
-          this.mensagem = "Problema ao alterar: " + error
+          this.addErrorAlert(error);
         })
     }
     else {
-      this.service.postPersonagem(this.form.value)
+      this.personagemService.postPersonagem(this.form.value)
         .then(result => {
-          this.reload()
-          this.mensagem = "Salvou!!!!";
+          this.addSuccessAlert("Novo personagem salvo.");
+          this.ngOnInit();
         }).catch(error => {
-          this.mensagem = "Problema ao salvar: " + error
+          this.addErrorAlert(error);
         })
     }
   }
-
-
 
 }
