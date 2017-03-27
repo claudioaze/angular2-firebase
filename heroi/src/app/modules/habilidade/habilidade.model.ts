@@ -1,3 +1,4 @@
 export interface Habilidade {
-    habilidade:string;
+    codigo: string;
+    nome: string;
 }

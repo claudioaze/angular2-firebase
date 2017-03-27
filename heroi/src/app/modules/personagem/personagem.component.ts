@@ -46,7 +46,10 @@ export class PersonagemComponent extends SuperComponent implements OnInit {
 
   initHabilidade() {
     return this.formBuilder.group({
-      habilidade: ['', Validators.required]
+      habilidade: this.formBuilder.control({
+        codigo: ['', Validators.required],
+        nome: ['', Validators.required],
+      })
     });
   }
 
@@ -82,9 +85,10 @@ export class PersonagemComponent extends SuperComponent implements OnInit {
       personagem.habilidades.forEach(obj => {
         let formGroupHabilidades: FormGroup = this.initHabilidade();
         formGroupHabilidades.patchValue(obj);
-
+        
         let formArray = <FormArray>this.form.get('habilidades');
         formArray.push(formGroupHabilidades);
+
       });
     }
   }

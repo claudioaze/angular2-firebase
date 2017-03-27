@@ -31,7 +31,7 @@ export class HabilidadeComponent extends SuperComponent implements OnInit {
   public createForm(): FormGroup {
     return this.formBuilder.group({
       codigo: [],
-      habilidade: ['', Validators.required]
+      nome: ['', Validators.required]
     });
   }
 

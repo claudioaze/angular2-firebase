@@ -26,15 +26,16 @@
             <div *ngFor="let item of form.controls.habilidades.controls; let i = index">
 
               <div class="input-group" [formGroupName]="i" style="margin-bottom: 5px">
-                <!--<input type="text" formControlName="habilidade" class="form-control" placeholder="Habilidade Nº {{i + 1}}">-->
-                <select formControlName="habilidade">
-                          <option *ngFor="let hab of listaHabilidades" [value]="hab.habilidade">{{hab.habilidade}}</option>
-                      </select>
+
+                <select formControlName="habilidade" name="habilidade">
+                    <option *ngFor="let hab of listaHabilidades" [ngValue]="hab">{{hab.nome}}</option>
+                </select>
+
                 <span class="input-group-btn">
-                          <button type="button" class="btn btn-danger" (click)="deleteHabilidade(i)">
-                              <i class="fa fa-trash" aria-hidden="true"></i>
-                          </button>
-                      </span>
+                    <button type="button" class="btn btn-danger" (click)="deleteHabilidade(i)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </span>
               </div>
             </div>
           </div>
@@ -86,7 +87,7 @@
         <td>{{personagem.companhia}}</td>
         <td>
           <p *ngFor="let h of personagem.habilidades">
-            {{h.habilidade}}
+            {{h.habilidade.nome}}
           </p>
         </td>
 

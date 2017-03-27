@@ -1,3 +1,4 @@
+import { Habilidade } from './habilidade.model';
 import { Injectable } from '@angular/core';
 import { Http, HttpModule, JsonpModule } from "@angular/http"
 
@@ -14,16 +15,14 @@ export class HabilidadeService {
       .then(response => this.convert(response.json()));
   }
 
-  postHabilidade(habilidade:any) {
-    console.log(habilidade);
+  postHabilidade(habilidade: Habilidade) {
     return this.http.post(`${this.baseUrl}/habilidade.json`, habilidade)
       .toPromise()
       .then(response => this.convert(response.json()));
   }
 
-  patchHabilidade(habilidade:any) {
+  patchHabilidade(habilidade: Habilidade) {
     let codigo = habilidade.codigo;
-    delete habilidade.codigo;
     return this.http.patch(`${this.baseUrl}/habilidade/${codigo}.json`, habilidade)
       .toPromise();
   }
@@ -39,9 +38,9 @@ export class HabilidadeService {
       return Object.keys(parsedResponse)
         .map(id => ({
           codigo: id,
-          habilidade: parsedResponse[id].habilidade
+          nome: parsedResponse[id].nome
         }))
-        .sort((a, b) => a.habilidade.localeCompare(b.habilidade));
+        .sort((a, b) => a.nome.localeCompare(b.nome));
     }
     return []
   }
